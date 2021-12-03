@@ -33,19 +33,17 @@ def getRemainingNumber(mostCommon):
                 break
     return remainingNumbers[0]
 
+if __name__ == "__main__":
+    remainingNumbers = numberStrings
+    while (len(remainingNumbers) > 1):
+        for i in range (0, numberLength):
+            remainingNumbers = keepNumbers(remainingNumbers, i, findCommonBit(i, remainingNumbers))
+            if (len(remainingNumbers) == 1):
+                break
 
+    o2Rating = int(getRemainingNumber(False), 2)
+    co2Rating = int(getRemainingNumber(True), 2)
 
-
-remainingNumbers = numberStrings
-while (len(remainingNumbers) > 1):
-    for i in range (0, numberLength):
-        remainingNumbers = keepNumbers(remainingNumbers, i, findCommonBit(i, remainingNumbers))
-        if (len(remainingNumbers) == 1):
-            break
-
-o2Rating = int(getRemainingNumber(False), 2)
-co2Rating = int(getRemainingNumber(True), 2)
-
-print("o2 rating:", o2Rating)
-print("co2 rating:", co2Rating)
-print("Life support rating:", o2Rating * co2Rating)
+    print("o2 rating:", o2Rating)
+    print("co2 rating:", co2Rating)
+    print("Life support rating:", o2Rating * co2Rating)
