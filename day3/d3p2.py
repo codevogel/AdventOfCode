@@ -24,11 +24,11 @@ def keepNumbers(remainingNumbers, index, bit):
                newRemainingNumbers.append(number)
     return newRemainingNumbers
 
-def getRemainingNumber(mostCommon):
+def getRemainingNumber(leastCommon):
     remainingNumbers = numberStrings
     while (len(remainingNumbers) > 1):
         for i in range (0, numberLength):
-            remainingNumbers = keepNumbers(remainingNumbers, i, findCommonBit(i, remainingNumbers, mostCommon))
+            remainingNumbers = keepNumbers(remainingNumbers, i, findCommonBit(i, remainingNumbers, leastCommon))
             if (len(remainingNumbers) == 1):
                 break
     return remainingNumbers[0]
