@@ -5,15 +5,62 @@ namespace AoCDay4
 {
     class Program
     {
+
+        static Queue<int> ballQueue;
+        static List<Board> boards;
+
         static void Main(string[] args)
         {
             // Convert input file to data
             string[] input = ReadInput(@"C:/workspace/AoC2021/day4/input.txt");
-            Queue<int> ballQueue;
-            List<Board> boards;
+
             ProcessInput(input, out boards, out ballQueue);
 
 
+            System.Console.WriteLine("\n\nOUTPUT PART ONE:\n\n");
+            PartOne();
+            //System.Console.WriteLine("\n\nOUTPUT PART TWO:\n\n");
+            //PartTwo();
+        }
+
+        private static void PartOne()
+        {
+
+            bool ansFound = false;
+            // While balls are in queue
+            while (ballQueue.Count > 0 && !ansFound)
+            {
+                // Dequeue ball
+                int ball = ballQueue.Dequeue();
+                System.Console.WriteLine("Drawed ball " + ball);
+
+                // Check boards for bingo based on ball  
+                foreach (Board board in boards)
+                {
+                    if (!board.Won)
+                    {
+                        board.MarkTile(ball);
+                        if (board.Bingo)
+                        {
+                            // Store won board
+                            board.Won = true;
+                            ansFound = true;
+                            PrintBoardScore(board, ball);
+                            break;
+                        }
+                    }
+                }
+            }
+
+
+            if (!ansFound)
+            {
+                System.Console.WriteLine("Didn't find any bingoes :(");
+            }
+        }
+
+        private static void PartTwo()
+        {
             // Keep track of last winning board and ball
             int lastWinningBall = -1;
             Board lastWinningBoard = null;
