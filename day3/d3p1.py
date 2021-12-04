@@ -1,10 +1,5 @@
 # by Kamiel de Visser
 
-# Open file
-from types import resolve_bases
-from typing import ForwardRef
-
-
 with (open("./day3/input.txt") as file):
     numberStrings = [ line.rstrip("\n") for line in file.readlines() ]
 

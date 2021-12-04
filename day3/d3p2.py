@@ -24,28 +24,19 @@ def keepNumbers(remainingNumbers, index, bit):
                newRemainingNumbers.append(number)
     return newRemainingNumbers
 
-def getRemainingNumber(mostCommon):
+def getRemainingNumber(leastCommon):
     remainingNumbers = numberStrings
     while (len(remainingNumbers) > 1):
         for i in range (0, numberLength):
-            remainingNumbers = keepNumbers(remainingNumbers, i, findCommonBit(i, remainingNumbers, mostCommon))
+            remainingNumbers = keepNumbers(remainingNumbers, i, findCommonBit(i, remainingNumbers, leastCommon))
             if (len(remainingNumbers) == 1):
                 break
     return remainingNumbers[0]
 
+if __name__ == "__main__":
+    o2Rating = int(getRemainingNumber(False), 2)
+    co2Rating = int(getRemainingNumber(True), 2)
 
-
-
-remainingNumbers = numberStrings
-while (len(remainingNumbers) > 1):
-    for i in range (0, numberLength):
-        remainingNumbers = keepNumbers(remainingNumbers, i, findCommonBit(i, remainingNumbers))
-        if (len(remainingNumbers) == 1):
-            break
-
-o2Rating = int(getRemainingNumber(False), 2)
-co2Rating = int(getRemainingNumber(True), 2)
-
-print("o2 rating:", o2Rating)
-print("co2 rating:", co2Rating)
-print("Life support rating:", o2Rating * co2Rating)
+    print("o2 rating:", o2Rating)
+    print("co2 rating:", co2Rating)
+    print("Life support rating:", o2Rating * co2Rating)
