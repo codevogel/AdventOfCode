@@ -1,22 +1,33 @@
 # by Kamiel de Visser
 
-from os import linesep
+import time # For measuring efficiency
+import math # for infinity
 
+if __name__ == "__main__":
+    start = time.time()
 
-with (open("./day7/input.txt") as file):
-    numberStrings = [line.rstrip("\n") for line in file.readlines()]
-    numbers = [int(numberString) for numberString in numberStrings[0].split(",")]
-
-
-min = 1000000000
-for desiredPos in range(2000):
-    fuel = 0
-    for pos in numbers:
-        absPos = abs(desiredPos - pos)
-        for i in range(1, absPos + 1):
-            fuel += i
+    # Convert input
+    with (open("./day7/input.txt") as file):
+        numberStrings = [line.rstrip("\n") for line in file.readlines()]
+        crabPositions = [int(numberString) for numberString in numberStrings[0].split(",")]
     
-    if (fuel < min):
-        min = fuel
+    # Take min and maxpos, these represent the bounds of crab movement
+    minPos, maxPos = min(crabPositions), max(crabPositions)
 
-print(min)
+    # Set minFuel to inf 
+    minFuel = math.inf
+    # Brute force every possible position
+    for desiredPos in range(minPos, maxPos):
+        fuel = 0
+        for pos in crabPositions:
+            # find delta movement
+            absPos = abs(desiredPos - pos)
+            # find nth triangular number of delta movement
+            # this is like a factorial with + instead of *
+            fuel += (absPos * (absPos + 1)) / 2
+        
+        if (fuel < minFuel):
+            minFuel = fuel
+
+    end = time.time()
+    print("Minimum fuel cost:", minFuel, f"({end-start:.3f} seconds)")
