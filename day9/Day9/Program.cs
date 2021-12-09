@@ -1,110 +1,187 @@
 // By Kamiel de Visser
 
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 namespace Day9
 {
     class Program
     {
+
+        static int gridBoundsX, gridBoundsY;
+        static int[,] grid;
+
         static void Main(string[] args)
         {
             string[] input = ReadInput(@"C:/workspace/AoC2021/day9/input.txt");
-            List<int> nums;
-            ProcessInput(input, out nums);
+            ProcessInput(input, out grid, out gridBoundsX, out gridBoundsY);
 
-            PartTwo(nums);
+            System.Console.WriteLine(PartOne(grid));
+            System.Console.WriteLine(PartTwo(grid));
         }
 
-        private static void PartOne(List<int> fishies)
+        private static string PartOne(int[,] grid)
         {
-            // For each day...
-            for (int days = 1; days <= 80; days++)
+            // Find lowest points in grid
+            List<Point> listOfLowest = GetListOfLowest(grid);
+
+            int risk = 0;
+            // Foreach lowest point find corresponding value and increment riskfactor
+            foreach (Point lowest in listOfLowest)
             {
-                // For each fish...
-                for (int fishIndex = 0; fishIndex < fishies.Count; fishIndex++)
+                risk += 1 + grid[lowest.X, lowest.Y];
+            }
+
+            return "Risk factor: " + risk;
+        }
+
+        /// <summary>
+        /// Gets a list of the locations in the grid that are lower than any of its adjacent locations
+        /// </summary>
+        private static List<Point> GetListOfLowest(int[,] grid)
+        {
+            List<Point> listOfLowest = new List<Point>();
+
+            // For every point in the grid
+            for (int x = 0; x < gridBoundsX; x++)
+            {
+                for (int y = 0; y < gridBoundsY; y++)
                 {
-                    // If fish will reproduce
-                    if (fishies[fishIndex] - 1 < 0)
+                    // Mark lowest as true
+                    bool lowest = true;
+                    // Find neighbours
+                    List<Point> neighbours = GetNeighbours(x, y);
+                    // For all neighbours
+                    foreach (Point point in neighbours)
                     {
-                        // Reproduce
-                        fishies.Add(9);
-                        fishies[fishIndex] = 6;
+                        // If point is higher than neighbours
+                        if (grid[x, y] >= grid[point.X, point.Y])
+                        {
+                            // Mark lowest as false
+                            lowest = false;
+                        }
                     }
-                    else
+                    // If still lowest
+                    if (lowest)
                     {
-                        // Just grow old :(
-                        fishies[fishIndex] -= 1;
+                        // Add to list
+                        listOfLowest.Add(new Point(x, y));
                     }
                 }
             }
+
+            return listOfLowest;
         }
 
-        private static void PartTwo(List<int> fishies)
+        private static string PartTwo(int[,] grid)
         {
-            // Use dict composed of  <days to reproduce, amount of fish with that 'age'>
-            // Use longs to prevent integer overflow
-            Dictionary<long, long> fishDict = new Dictionary<long, long>();
+            // Get lowest points
+            List<Point> listOfLowest = GetListOfLowest(grid);
 
-            // For each fish...
-            for (int i = 0; i < fishies.Count; i++)
+
+            // Find basins and note their sizes
+            List<int> maxBasinSizes = new List<int>();
+            foreach (Point lowest in listOfLowest)
             {
-                // Place age of fish as key
-                // Increment amount of fish per fish with that age
-                AddOrIncrementDict(fishDict, fishies[i], 1);
+                maxBasinSizes.Add(GetBasin(lowest).Count);
             }
 
-
-            // For each day...
-            for (int days = 1; days <= 256; days++)
+            // Remove min basins untill 3 are left over
+            while (maxBasinSizes.Count > 3)
             {
-                // Create dict for next day
-                Dictionary<long, long> nextDayDict = new Dictionary<long, long>();
+                maxBasinSizes.Remove(maxBasinSizes.Min());
+            }
 
-                // For each age group of fish
-                foreach (long dayToReproduce in fishDict.Keys.ToArray())
+            // Multiply sizes together
+            int sum = 1;
+            for (int i = 0; i < 3; i++)
+            {
+                sum *= maxBasinSizes[i];
+            }
+
+            return "Sizes of three largest basins multiplied: " + sum;
+        }
+
+        /// <summary>
+        /// Gets a basin given startindex
+        /// </summary>
+        private static List<Point> GetBasin(Point startIndex)
+        {
+            // Keeps track of current basin contents
+            List<Point> basin = new List<Point>();
+            // Potential neighbours
+            List<Point> startNeighbours = GetNeighbours(startIndex.X, startIndex.Y, true);
+
+            return FillBasin(basin, startNeighbours);
+        }
+
+        /// <summary>
+        /// Recursive function that fills a basin
+        /// </summary>
+        private static List<Point> FillBasin(List<Point> basin, List<Point> availableNeighbours)
+        {
+            // Return if no more neighbours
+            if (availableNeighbours.Count == 0)
+            {
+                return basin;
+            }
+
+            // New neighbours to track
+            List<Point> newlyFoundNeighbours = new List<Point>();
+
+            // For each neighbur
+            foreach (Point neighbour in availableNeighbours)
+            {
+                // Get their neighbours
+                List<Point> newNeighbours = GetNeighbours(neighbour.X, neighbour.Y, true);
+                // For each of their neighbours
+                foreach (Point newNeighbour in newNeighbours)
                 {
-                    // Get amount of fish in age group
-                    long amountOfFishThisAge = fishDict[dayToReproduce];
-                    // Get next age
-                    long nextAge = dayToReproduce - 1;
-
-                    // If next age just grows old
-                    if (nextAge >= 0)
+                    // If neighbour is already contained in basin, skip
+                    if (basin.Contains(newNeighbour))
                     {
-                        // Grow old
-                        AddOrIncrementDict(nextDayDict, nextAge, amountOfFishThisAge);
+                        continue;
                     }
-                    else
+                    // Add new neighbour
+                    basin.Add(newNeighbour);
+                    newlyFoundNeighbours.Add(newNeighbour);
+                }
+            }
+            // Fill basin with potential neighbours
+            return FillBasin(basin, newlyFoundNeighbours);
+        }
+
+        /// <summary>
+        /// Gets the neighbours from a point on the grid
+        /// </summary>
+        private static List<Point> GetNeighbours(int x, int y, bool basin = false)
+        {
+            // Potential locations
+            Point[] neighbourIndeces = { new Point(x, y - 1), new Point(x + 1, y), new Point(x, y + 1), new Point(x - 1, y) };
+
+
+            List<Point> neighbours = new List<Point>();
+            foreach (Point neighbour in neighbourIndeces)
+            {
+                // Skip cases that exceed grid bounds
+                if (neighbour.X < 0 || neighbour.X >= gridBoundsX || neighbour.Y < 0 || neighbour.Y >= gridBoundsY)
+                {
+                    continue;
+                }
+                // If looking for basin neighbours
+                if (basin)
+                {
+                    // Also skip neighbours that are 9
+                    if (grid[neighbour.X, neighbour.Y] == 9)
                     {
-                        // Reproduce
-                        AddOrIncrementDict(nextDayDict, 8, amountOfFishThisAge);
-                        AddOrIncrementDict(nextDayDict, 6, amountOfFishThisAge);
+                        continue;
                     }
                 }
-
-                // Reassign fishdict to dict of next day
-                fishDict = nextDayDict;
+                // Else add neighbour
+                neighbours.Add(neighbour);
             }
-
-            // Sum the fish
-            long sum = 0;
-            foreach (long amountOfFish in fishDict.Values)
-            {
-                sum += amountOfFish;
-            }
-            System.Console.WriteLine("Fish after days: " + sum);
+            return neighbours;
         }
-
-        private static void AddOrIncrementDict(Dictionary<long, long> dict, long key, long amount)
-        {
-            if (dict.ContainsKey(key))
-            {
-                dict[key] += amount;
-            }
-            else
-            {
-                dict.Add(key, amount);
-            }
-        }
-
 
         /// <summary>
         /// Parse input file into string array
@@ -123,24 +200,22 @@ namespace Day9
         /// <summary>
         /// Load data from string array
         /// </summary>
-        private static void ProcessInput(string[] input, out List<int> nums)
+        private static void ProcessInput(string[] input, out int[,] grid, out int gridBoundsX, out int gridBoundsY)
         {
-            nums = new List<int>();
-            foreach (string inputLine in input)
-            {
-                if (string.IsNullOrEmpty(inputLine))
-                {
-                    continue;
-                }
-                else
-                {
-                    string[] numberStrings = inputLine.Split(',');
+            grid = new int[input[0].Length, input.Length];
 
-                    foreach (string numberString in numberStrings)
-                    {
-                        nums.Add(int.Parse(numberString));
-                    }
+            gridBoundsX = grid.GetLength(0);
+            gridBoundsY = grid.GetLength(1);
+
+            for (int y = 0; y < input.GetLength(0); y++)
+            {
+                for (int x = 0; x < input[0].Length; x++)
+                {
+                    grid[x, y] = int.Parse("" + input[y][x]);
                 }
             }
         }
     }
+}
+
+
