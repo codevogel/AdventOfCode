@@ -1,4 +1,6 @@
-﻿namespace Day9
+// By Kamiel de Visser
+
+namespace Day9
 {
     class Program
     {
