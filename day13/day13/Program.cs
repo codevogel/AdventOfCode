@@ -23,22 +23,19 @@ namespace day13
             (bool x, int coord)[] instructions;
             ReadInput(out points, out instructions, out paper);
             Console.WriteLine("Ans part 1:\n");
-
             foreach ((bool x, int coord) instruction in instructions)
             {
                 Fold(instruction);
                 if (instruction == instructions[0])
                     Console.WriteLine("Num dots after fold 1: " + paper.Cast<char>().Where(c => c.Equals('#')).Count());
-
             }
             Console.WriteLine("\nAns part 2:\n");
-            PrintPaper();
         }
 
-        private static void Fold((bool x, int coord) instruction)
+        private static void Fold((bool foldOverX, int coord) instruction)
         {
             Queue<char[]> firstHalf = new(), secondHalf = new();
-            if (instruction.x)
+            if (instruction.foldOverX)
             {
                 // top of fold
                 for (int x = instruction.coord - 1; x >= 0; x--)
@@ -50,10 +47,9 @@ namespace day13
                 {
                     secondHalf.Enqueue(GetCol(paper, x));
                 }
-                paper = MergeRows(secondHalf, firstHalf, instruction.x);
+                paper = MergeRows(secondHalf, firstHalf, instruction.foldOverX);
                 return;
             }
-
 
             // left of fold
             for (int y = instruction.coord - 1; y >= 0; y--)
@@ -66,7 +62,7 @@ namespace day13
                 secondHalf.Enqueue(GetRow(paper, y));
             }
 
-            paper = MergeRows(secondHalf, firstHalf, instruction.x);
+            paper = MergeRows(secondHalf, firstHalf, instruction.foldOverX);
         }
 
         private static char[,] MergeRows(Queue<char[]> firstHalf, Queue<char[]> secondHalf, bool foldOverX)
