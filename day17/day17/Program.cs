@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -29,7 +30,9 @@ namespace day17
 
             for (int x = 1; x <= stopArea.x; x++) // Velocities that are 0 or faster than stopArea.x will always miss
             {
-                for (int y = stopArea.y; y < 500; y++)
+                // Velocities that are lower than stopArea.y always miss. 
+                // Highest absolute value of area y bounds is limit for y velocity 
+                for (int y = stopArea.y; y <= Math.Max(Math.Abs(startArea.y), Math.Abs(stopArea.y)); y++)
                 {
                     (bool hit, List<(int x, int y)> positions) trajectory = LaunchProbe((x, y));
                     if (trajectory.hit)
