@@ -33,52 +33,48 @@ namespace day16
     {
         public int bytesRead;
         public List<Packet> subpackets;
-
         public int version;
         public TypeID typeID;
-        public bool lengthType;
+        public bool lengthType; // number of packets type when false
         public long value = long.MinValue;
+        public IEnumerable<char> bitStream;
 
-        public Packet(IEnumerable<char> bitStream)
+        public Packet(IEnumerable<char> _bitStream)
         {
+            this.bitStream = _bitStream;
             subpackets = new();
 
-            version = Convert.ToInt32(new string(bitStream.Take(3).ToArray()), 2);
-            typeID = (TypeID)Convert.ToInt32(new string(bitStream.Skip(3).Take(3).ToArray()), 2);
+            // Read header
+            version = Convert.ToInt32(new string(ReadStream(3).ToArray()), 2);
+            typeID = (TypeID)Convert.ToInt32(new string(ReadStream(3).ToArray()), 2);
 
-            bitStream = bitStream.Skip(6);
-            bytesRead += 6;
-
-
+            // Parse data
             if (typeID == TypeID.LITERAL)
             {
-                (long literal, int bytesRead) tmp = GetLiteral(bitStream);
-                bytesRead += tmp.bytesRead;
-                value = tmp.literal;
+                StringBuilder result = new();
+                bool readLastGroup = false;
+                while (!readLastGroup)
+                {
+                    if (ReadStream(1).First() == '0')
+                        readLastGroup = true;
+                    result.Append(ReadStream(4).ToArray());
+                }
+                value = Convert.ToInt64(result.ToString(), 2);
             }
             else
             {
-                lengthType = bitStream.First() == '0';
-                bitStream = bitStream.Skip(1);
-                bytesRead += 1;
-
-                if (lengthType)
+                if (ReadStream(1).First() == '0') // Extract subpackets by length
                 {
-                    int lengthOfSubpackets = Convert.ToInt32(new string(bitStream.Take(15).ToArray()), 2);
-                    bitStream = bitStream.Skip(15);
-                    bytesRead += 15;
-
+                    int lengthOfSubpackets = Convert.ToInt32(new string(ReadStream(15).ToArray()), 2);
                     bytesRead += ExtractSubpacketsByLength(lengthOfSubpackets, bitStream);
                 }
-                else
+                else // Extract subpackets by number
                 {
-                    int numberOfSubpackets = Convert.ToInt32(new string(bitStream.Take(11).ToArray()), 2);
-                    bitStream = bitStream.Skip(11);
-                    bytesRead += 11;
-
+                    int numberOfSubpackets = Convert.ToInt32(new string(ReadStream(11).ToArray()), 2);
                     bytesRead += ExtractSubpacketsByNumber(numberOfSubpackets, bitStream);
                 }
 
+                // Get value based on subvalues
                 var subValues = subpackets.Select(packet => packet.value);
                 switch (typeID)
                 {
@@ -109,6 +105,14 @@ namespace day16
             }
         }
 
+        private IEnumerable<char> ReadStream(int amount)
+        {
+            IEnumerable<char> result = bitStream.Take(amount);
+            bytesRead += amount;
+            bitStream = bitStream.Skip(amount);
+            return result;
+        }
+
         private int ExtractSubpacketsByNumber(int numberOfSubpackets, IEnumerable<char> bitStream)
         {
             int packetsAdded = 0;
@@ -134,22 +138,6 @@ namespace day16
                 bytesRead += subpacket.bytesRead;
             }
             return bytesRead;
-        }
-
-        private (long literal, int bytesRead) GetLiteral(IEnumerable<char> data)
-        {
-            StringBuilder result = new();
-            int bytesRead = 0;
-            bool lastGroup = false;
-            while (!lastGroup)
-            {
-                if (data.First() == '0')
-                    lastGroup = true;
-                result.Append(data.Skip(1).Take(4).ToArray());
-                bytesRead += 5;
-                data = data.Skip(5);
-            }
-            return (Convert.ToInt64(result.ToString(), 2), bytesRead);
         }
     }
 
