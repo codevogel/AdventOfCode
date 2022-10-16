@@ -105,6 +105,15 @@ namespace day16
             }
         }
 
+        TypeID GetEnum()
+        {
+            bool a = false;
+            switch (a)
+            {
+
+            }
+        }
+
         private IEnumerable<char> ReadStream(int amount)
         {
             IEnumerable<char> result = bitStream.Take(amount);

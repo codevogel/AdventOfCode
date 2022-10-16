@@ -11,6 +11,8 @@ namespace day14
         static string polymer;
         static Dictionary<string, string> insertionDict;
 
+        static Dictionary<char, long> countDict;
+
         static Stopwatch stopwatch;
 
         static void Main(string[] args)
@@ -58,14 +60,16 @@ namespace day14
             stopwatch = new Stopwatch();
             stopwatch.Start();
 
+            countDict = new Dictionary<char, long>();
+
             ReadInput(out polymer, out insertionDict);
 
             Dictionary<string, long> occurances = GetOccurances(polymer);
             for (int i = 0; i < 40; i++)
             {
-
                 occurances = GetOccurances(occurances);
             }
+
             System.Console.WriteLine(GetAnswer(occurances));
 
             stopwatch.Stop();
@@ -99,6 +103,8 @@ namespace day14
                 occurencesPerCharacter[key] = occurencesPerCharacter[key] / 2;
             }
 
+            countDict[polymer[0]]++;
+            countDict[polymer[polymer.Length - 1]]++;
 
             long max = occurencesPerCharacter.Values.Max();
             long min = occurencesPerCharacter.Values.Min();
@@ -112,13 +118,21 @@ namespace day14
             // For each type of occurence
             foreach (string key in occurances.Keys)
             {
-                // Get character to be inserted for this pair
+
+                foreach (char c in key)
+                {
+
+                }
+
                 char insertedChar = insertionDict[key][0];
+
+                IncrementChar(insertedChar, occurances[key]);
                 // Generate new pairs
                 string[] newPairs = {
-                      new StringBuilder(2).Append(key[0]).Append(insertedChar).ToString(),
-                      new StringBuilder(2).Append(insertedChar).Append(key[1]).ToString()
-                };
+                new StringBuilder(2).Append(key[0]).Append(insertedChar).ToString(),
+                new StringBuilder(2).Append(insertedChar).Append(key[1]).ToString()
+        };
+
 
                 // For each new pair
                 foreach (string pair in newPairs)
@@ -136,6 +150,17 @@ namespace day14
                 }
             }
             return newOccurences;
+        }
+
+        private static void IncrementChar(char c, long v)
+        {
+            if (!countDict.ContainsKey(c))
+            {
+                countDict[c] = v;
+                return;
+            }
+            countDict[c] += v;
+
         }
 
         private static Dictionary<string, long> GetOccurances(string polymer)
