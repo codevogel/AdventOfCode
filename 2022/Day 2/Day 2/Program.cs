@@ -58,7 +58,7 @@ class Program
 
     private static int PlayGameA(RPS p1, RPS p2)
     {
-	    return p1 switch
+	return p1 switch
         {
             RPS.ROCK => p2 switch
             {
