@@ -3,137 +3,115 @@
 class Program
 {
 
-	private static string[][] output;
-	private static int score;
+    public static Dictionary<string, RPS> rpsMap = new Dictionary<string, RPS>()
+    {
+        { "A", RPS.ROCK }, { "B", RPS.PAPER }, { "C", RPS.SCISSORS },
+        { "X", RPS.ROCK }, { "Y", RPS.PAPER }, { "Z", RPS.SCISSORS }
+    };
 
-	static void Main(string[] args)
+    public static Dictionary<string, Outcome> outcomeMap = new Dictionary<string, Outcome>()
+    {
+        { "X", Outcome.LOSS }, { "Y", Outcome.DRAW }, { "Z", Outcome.WIN }
+    };
+
+    public enum RPS { ROCK = 1, PAPER = 2, SCISSORS = 3 }
+    public enum Outcome { WIN = 6, DRAW = 3, LOSS = 0 }
+
+    static string[] input;
+    
+    static void Main(string[] args)
 	{
 		Stopwatch stopwatch = new Stopwatch();
 		stopwatch.Start();
 
-		ReadInput(File.ReadAllLines(@"../../../../input.txt"), out output);
+        input = File.ReadAllLines(@"../../../../input.txt");
 
-		SolveA();
+        SolveA();
 		SolveB();
 
 		stopwatch.Stop();
-		System.Console.WriteLine("Found solution in " + stopwatch.ElapsedMilliseconds + "ms");
+		Console.WriteLine("Found solution in " + stopwatch.ElapsedMilliseconds + "ms");
 	}
 
-	private static void ReadInput(string[] input, out string[][] output)
-	{
-		output = input.Select(line => line.Split(' ')).ToArray();
-	}
-
-    private static void PlayGameA(string p1, string p2)
+    private static void SolveA()
     {
-        switch (p1)
-        {
-			case "A":
-                switch (p2)
-                {
-					case "X":
-						score += 1 + 3;
-						break;
-					case "Y":
-						score += 2 + 6;
-						break;
-					case "Z":
-						score += 3 + 0;
-						break;
-                }
-				break;
-			case "B":
-				switch (p2)
-				{
-					case "X":
-						score += 1 + 0;
-						break;
-					case "Y":
-						score += 2 + 3;
-						break;
-					case "Z":
-						score += 3 + 6;
-						break;
-				}
-				break;
-			case "C":
-				switch (p2)
-				{
-					case "X":
-						score += 1 + 6;
-						break;
-					case "Y":
-						score += 2 + 0;
-						break;
-					case "Z":
-						score += 3 + 3;
-						break;
-				}
-				break;
-		}
+        // Split file into 2d Rock Paper Scissors Array where each element contains the choices of player 1, then player 2 respectively.
+        RPS[][] outputA = input.Select(line => line.Split(' ')).Select(parts => new RPS[] { rpsMap[parts[0]], rpsMap[parts[1]] }).ToArray();
+        // Map scores for each game then calculate the sum
+        int score = outputA.ToList().Select(parts => PlayGameA(parts[0], parts[1])).Sum();
+        Console.WriteLine("Outcome A: " + score);
     }
 
-	private static void PlayGameB(string p1, string p2)
-	{
-		switch (p1)
-		{
-			case "A":
-				switch (p2)
-				{
-					case "X":
-						score += 3 + 0;
-						break;
-					case "Y":
-						score += 1 + 3;
-						break;
-					case "Z":
-						score += 2 + 6;
-						break;
-				}
-				break;
-			case "B":
-				switch (p2)
-				{
-					case "X":
-						score += 1 + 0;
-						break;
-					case "Y":
-						score += 2 + 3;
-						break;
-					case "Z":
-						score += 3 + 6;
-						break;
-				}
-				break;
-			case "C":
-				switch (p2)
-				{
-					case "X":
-						score += 2 + 0;
-						break;
-					case "Y":
-						score += 3 + 3;
-						break;
-					case "Z":
-						score += 1 + 6;
-						break;
-				}
-				break;
-		}
-	}
+    private static void SolveB()
+    {
+        // Split file into a tuple array where each element contains the choices of player 1, then player 2's desired outcome respectively.
+        (RPS rps, Outcome outcome)[] outputB = input.Select(line => line.Split(' ')).Select(parts => (rpsMap[parts[0]], outcomeMap[parts[1]])).ToArray();
+        // Map scores for each game then calculate the sum
+        int score = outputB.ToList().Select(tuple => PlayGameB(tuple.rps, tuple.outcome)).Sum();
+        Console.WriteLine("Outcome B: " + score);
+    }
 
-	private static void SolveA()
-	{
-		score = 0;
-		output.ToList().ForEach(parts => PlayGameA(parts[0], parts[1]));
-		Console.WriteLine("Outcome A: " + score);
-	}
+    private static int GetScore(RPS style, Outcome outcome)
+    {
+        // return corresponding enum values added together
+		return (int)style + (int)outcome;
+    }
 
-	private static void SolveB()
+    private static int PlayGameA(RPS p1, RPS p2)
+    {
+		return p1 switch
+        {
+            RPS.ROCK => p2 switch
+            {
+                RPS.ROCK => GetScore(RPS.ROCK, Outcome.DRAW),
+                RPS.PAPER => GetScore(RPS.PAPER, Outcome.WIN),
+                RPS.SCISSORS => GetScore(RPS.SCISSORS, Outcome.LOSS),
+                _ => throw new NotImplementedException()
+            },
+            RPS.PAPER => p2 switch
+            {
+                RPS.ROCK => GetScore(RPS.ROCK, Outcome.LOSS),
+                RPS.PAPER => GetScore(RPS.PAPER, Outcome.DRAW),
+                RPS.SCISSORS => GetScore(RPS.SCISSORS, Outcome.WIN),
+                _ => throw new NotImplementedException()
+            },
+            RPS.SCISSORS => p2 switch
+            {
+                RPS.ROCK => GetScore(RPS.ROCK, Outcome.WIN),
+                RPS.PAPER => GetScore(RPS.PAPER, Outcome.LOSS),
+                RPS.SCISSORS => GetScore(RPS.SCISSORS, Outcome.DRAW),
+                _ => throw new NotImplementedException()
+            },
+            _ => throw new NotImplementedException()
+        };
+    }
+
+	private static int PlayGameB(RPS p1, Outcome desiredOutcome)
 	{
-		score = 0;
-		output.ToList().ForEach(parts => PlayGameB(parts[0], parts[1]));
-		Console.WriteLine("Outcome B: " + score);
+		return p1 switch
+        {
+            RPS.ROCK => desiredOutcome switch
+            {
+                Outcome.WIN => GetScore(RPS.PAPER, Outcome.WIN),
+                Outcome.DRAW => GetScore(RPS.ROCK, Outcome.DRAW),
+                Outcome.LOSS => GetScore(RPS.SCISSORS, Outcome.LOSS),
+                _ => throw new NotImplementedException()
+            },
+            RPS.PAPER => desiredOutcome switch
+            {
+                Outcome.WIN => GetScore(RPS.SCISSORS, Outcome.WIN),
+                Outcome.DRAW => GetScore(RPS.PAPER, Outcome.DRAW),
+                Outcome.LOSS => GetScore(RPS.ROCK, Outcome.LOSS),
+                _ => throw new NotImplementedException()
+            },
+            RPS.SCISSORS => desiredOutcome switch
+            {
+                Outcome.WIN => GetScore(RPS.ROCK, Outcome.WIN),
+                Outcome.DRAW => GetScore(RPS.SCISSORS, Outcome.DRAW),
+                Outcome.LOSS => GetScore(RPS.PAPER, Outcome.LOSS),
+                _ => throw new NotImplementedException()
+            },
+            _ => throw new NotImplementedException(),
+        };
 	}
 }
