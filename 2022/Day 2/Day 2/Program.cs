@@ -2,7 +2,6 @@
 
 class Program
 {
-
     public static Dictionary<string, RPS> rpsMap = new Dictionary<string, RPS>()
     {
         { "A", RPS.ROCK }, { "B", RPS.PAPER }, { "C", RPS.SCISSORS },
@@ -21,16 +20,16 @@ class Program
     
     static void Main(string[] args)
     {
-	    Stopwatch stopwatch = new Stopwatch();
-	    stopwatch.Start();
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
 
         input = File.ReadAllLines(@"../../../../input.txt");
 
         SolveA();
-	    SolveB();
+        SolveB();
 
-	    stopwatch.Stop();
-	    Console.WriteLine("Found solution in " + stopwatch.ElapsedMilliseconds + "ms");
+        stopwatch.Stop();
+        Console.WriteLine("Found solution in " + stopwatch.ElapsedMilliseconds + "ms");
     }
 
     private static void SolveA()
@@ -54,12 +53,12 @@ class Program
     private static int GetScore(RPS style, Outcome outcome)
     {
         // return corresponding enum values added together
-		return (int)style + (int)outcome;
+	    return (int)style + (int)outcome;
     }
 
     private static int PlayGameA(RPS p1, RPS p2)
     {
-		return p1 switch
+	    return p1 switch
         {
             RPS.ROCK => p2 switch
             {
@@ -86,9 +85,9 @@ class Program
         };
     }
 
-	private static int PlayGameB(RPS p1, Outcome desiredOutcome)
-	{
-		return p1 switch
+    private static int PlayGameB(RPS p1, Outcome desiredOutcome)
+    {
+	    return p1 switch
         {
             RPS.ROCK => desiredOutcome switch
             {
@@ -113,5 +112,5 @@ class Program
             },
             _ => throw new NotImplementedException(),
         };
-	}
+    }
 }
