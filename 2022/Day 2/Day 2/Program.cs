@@ -20,18 +20,18 @@ class Program
     static string[] input;
     
     static void Main(string[] args)
-	{
-		Stopwatch stopwatch = new Stopwatch();
-		stopwatch.Start();
+    {
+	    Stopwatch stopwatch = new Stopwatch();
+	    stopwatch.Start();
 
         input = File.ReadAllLines(@"../../../../input.txt");
 
         SolveA();
-		SolveB();
+	    SolveB();
 
-		stopwatch.Stop();
-		Console.WriteLine("Found solution in " + stopwatch.ElapsedMilliseconds + "ms");
-	}
+	    stopwatch.Stop();
+	    Console.WriteLine("Found solution in " + stopwatch.ElapsedMilliseconds + "ms");
+    }
 
     private static void SolveA()
     {
