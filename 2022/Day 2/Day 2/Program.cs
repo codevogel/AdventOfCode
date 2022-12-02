@@ -53,7 +53,7 @@ class Program
     private static int GetScore(RPS style, Outcome outcome)
     {
         // return corresponding enum values added together
-	    return (int)style + (int)outcome;
+        return (int)style + (int)outcome;
     }
 
     private static int PlayGameA(RPS p1, RPS p2)
@@ -87,7 +87,7 @@ class Program
 
     private static int PlayGameB(RPS p1, Outcome desiredOutcome)
     {
-	    return p1 switch
+        return p1 switch
         {
             RPS.ROCK => desiredOutcome switch
             {
