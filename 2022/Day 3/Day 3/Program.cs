@@ -13,7 +13,7 @@ static class Program
 		ReadInput(File.ReadAllLines(@"../../../../input.txt"), out outputA, out outputB);
 
 		Console.WriteLine("Outcome A: " +
-			outputA.Select(parts => GetCommonChar(parts[0], parts[1])).Select(c => char.IsUpper(c) ? c - 'A' + 27 : c - 'a' + 1).Sum());
+			outputA.Select(compartment => GetCommonChar(compartment[0], compartment[1])).Select(c => char.IsUpper(c) ? c - 'A' + 27 : c - 'a' + 1).Sum());
 		Console.WriteLine("Outcome B: " +
 			outputB.Select(rucksack => GetCommonChar(rucksack[0], rucksack[1], rucksack[2])).Select(c => char.IsUpper(c) ? c - 'A' + 27 : c - 'a' + 1).Sum());
 
