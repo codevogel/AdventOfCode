@@ -2,7 +2,6 @@
 
 class Program
 {
-
 	private static Stack<char>[] outputStacks;
 	private static (int amount, int from, int to)[] instructions;
 
@@ -22,7 +21,7 @@ class Program
 	private static void ReadInput(string[] input, out Stack<char>[] outputStacks, out (int amount, int from, int to)[] instructions)
 	{
 		var stackTextColumns = input.TakeWhile(line => ! string.IsNullOrEmpty(line)).Select(line => Split(line).ToArray()).SkipLast(1).Reverse().ToArray();
-		
+
 		// Initialize stacks
 		List<Stack<char>> stacks = new List<Stack<char>>();
 		for (int i = 0; i < stackTextColumns[0].Length; i++)
@@ -30,12 +29,12 @@ class Program
 			stacks.Add(new Stack<char>());
 		}
 		// For each line in input
-        foreach (string[] parts in stackTextColumns)
-        {
+		foreach (string[] parts in stackTextColumns)
+		{
 			// Iterate over each column
 			int stackIndex = 0;
 			foreach(string part in parts)
-            {
+			{
 				// Add to stack corresponding to the current column if non-whitespace string
 				if (!string.IsNullOrWhiteSpace(part))
 					stacks[stackIndex].Push(part[1]);
@@ -49,8 +48,8 @@ class Program
 			.Select(parts => (int.Parse(parts[1]), int.Parse(parts[3]) - 1, int.Parse(parts[5]) - 1)).ToArray();
 	}
 
-    private static IEnumerable<string> Split(string line)
-    {
+	private static IEnumerable<string> Split(string line)
+	{
 		while (line.Length > 0)
 		{
 			yield return new string(line.Take(3).ToArray());
@@ -58,17 +57,16 @@ class Program
 		}
 	}
 
-    private static string CompleteInstructionsA(Stack<char>[] stacks)
-    {
-        foreach ((int amount, int from, int to) instruction in instructions)
-        {
-            for (int i = 0; i < instruction.amount; i++)
-            {
+	private static string CompleteInstructionsA(Stack<char>[] stacks)
+	{
+		foreach ((int amount, int from, int to) instruction in instructions)
+		{
+		    for (int i = 0; i < instruction.amount; i++)
+		    {
 				// Pick up crate from one stack and place on another
 				stacks[instruction.to].Push(stacks[instruction.from].Pop());
-            }
-        }
-
+		    }
+		}
 		return string.Concat(stacks.Select(stack => stack.Peek()));
 	}
 
@@ -90,7 +88,6 @@ class Program
 				stacks[instruction.to].Push(cratesPickedUp.Pop());
 			}
 		}
-
 		return string.Concat(stacks.Select(stack => stack.Peek()));
 	}
 }
