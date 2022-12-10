@@ -3,23 +3,35 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Day 9", "Day 9\Day 9.csproj", "{387F4548-2BC6-4FF9-82EA-9ED7A371D53B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "day9", "day9\day9.csproj", "{C1F630CE-C222-4977-991E-B19C83A8DD3F}"
 EndProject
 Global
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{387F4548-2BC6-4FF9-82EA-9ED7A371D53B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{387F4548-2BC6-4FF9-82EA-9ED7A371D53B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{387F4548-2BC6-4FF9-82EA-9ED7A371D53B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{387F4548-2BC6-4FF9-82EA-9ED7A371D53B}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4A231874-B808-4CB7-A292-998A13E0CCFE}
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C1F630CE-C222-4977-991E-B19C83A8DD3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1F630CE-C222-4977-991E-B19C83A8DD3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1F630CE-C222-4977-991E-B19C83A8DD3F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C1F630CE-C222-4977-991E-B19C83A8DD3F}.Debug|x64.Build.0 = Debug|Any CPU
+		{C1F630CE-C222-4977-991E-B19C83A8DD3F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C1F630CE-C222-4977-991E-B19C83A8DD3F}.Debug|x86.Build.0 = Debug|Any CPU
+		{C1F630CE-C222-4977-991E-B19C83A8DD3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1F630CE-C222-4977-991E-B19C83A8DD3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1F630CE-C222-4977-991E-B19C83A8DD3F}.Release|x64.ActiveCfg = Release|Any CPU
+		{C1F630CE-C222-4977-991E-B19C83A8DD3F}.Release|x64.Build.0 = Release|Any CPU
+		{C1F630CE-C222-4977-991E-B19C83A8DD3F}.Release|x86.ActiveCfg = Release|Any CPU
+		{C1F630CE-C222-4977-991E-B19C83A8DD3F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
