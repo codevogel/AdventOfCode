@@ -19,6 +19,5 @@ def updateReadmes(year, day):
                         file.write(item)
     
 if __name__ == "__main__":
-    year = input("Current year?\t")
-    day = input("Current day?\t")
-    updateReadmes(year, day)
+    day = input("Credit readmes until what day?\t")
+    updateReadmes("2022", day)
