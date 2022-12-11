@@ -12,8 +12,8 @@ class Program
         stopwatch.Start();
 
         string[] input = File.ReadAllLines(@"../../../../input.txt");
-        Solve(input, true);
-        Solve(input, false);
+        Solve(input, partOne: true);
+        Solve(input, partTwo: false);
 
         stopwatch.Stop();
         Console.WriteLine("Found solution in " + stopwatch.ElapsedMilliseconds + "ms");
@@ -21,6 +21,7 @@ class Program
 
     private static void Solve(string[] input, bool partOne)
     {
+        // Parse monkeys into their tribe
         while(input.Length > 0)
         {
             int id = int.Parse(String.Concat(input[0].Split(' ')[1].SkipLast(1)));
@@ -34,15 +35,16 @@ class Program
             input = input.Skip(7).ToArray();
         }
 
+        // Find least common multiple of monkeys' divisibleBy value
         Monkey.LCM = LCM(tribe.Values.Select(monkey => monkey.divisibleBy).ToArray());
         
+        // Watch those damned monkeys throw your items around!
         int numRounds = partOne ? 20 : 10000;
         for (int round = 0; round < numRounds; round++)
         {
-            for (int monkeyIndex = 0; monkeyIndex < tribe.Count; monkeyIndex++)
+            for (int currentMonkey = 0; currentMonkey < tribe.Count; currentMonkey++)
             {
-                Monkey currentMonkey = tribe[monkeyIndex];
-                currentMonkey.InspectItems(partOne);
+                tribe[currentMonkey].InspectItems(partOne);
             }
         }
 
@@ -50,7 +52,8 @@ class Program
         Console.WriteLine(string.Format("Part {0}: Monkey Business after {1} rounds: \t{2}", partOne ? 1 : 2, numRounds, mostActiveMonkeyInspections[0] * mostActiveMonkeyInspections[1]));
     }
 
-    public static long LCM(long[] ofNumbers) // Find LCM using GCD (source: https://iq.opengenus.org/lcm-of-array-of-numbers/ )
+    // Find LCM using GCD (source: https://iq.opengenus.org/lcm-of-array-of-numbers/ )
+    public static long LCM(long[] ofNumbers) 
     {
         long ans = ofNumbers[0];
         for (int i = 1; i < ofNumbers.Length; i++)
@@ -60,7 +63,8 @@ class Program
         return ans;
     }
 
-    private static long GCD(long a, long b) { return b == 0 ? a : GCD(b, a % b); }
+    // Find greatest common divisor
+    private static long GCD(long a, long b) { return b == 0 ? a : GCD(b, a % b); } 
 
     public class Monkey
     {
