@@ -13,7 +13,7 @@ class Program
 
         string[] input = File.ReadAllLines(@"../../../../input.txt");
         Solve(input, partOne: true);
-        Solve(input, partTwo: false);
+        Solve(input, partOne: false);
 
         stopwatch.Stop();
         Console.WriteLine("Found solution in " + stopwatch.ElapsedMilliseconds + "ms");
