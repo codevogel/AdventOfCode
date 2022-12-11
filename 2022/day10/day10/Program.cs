@@ -60,7 +60,7 @@ class Program
                 {
                     Console.Write('\n');
                 }
-                Console.Write(covers.Contains(crtMarker % VideoSystem.LINESIZE) ? '#' : '.');
+                Console.Write(covers.Contains(crtMarker % VideoSystem.LINESIZE) ? '#' : ' ');
             }
         }
     }
