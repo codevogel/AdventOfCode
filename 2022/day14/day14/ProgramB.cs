@@ -15,18 +15,16 @@ class ProgramB
 
     private static void SolveA()
     {
-        (int x, int y) sandOrigin;
-        ParseData(File.ReadAllLines("../../../../input.txt"), out rocks, out sandOrigin, out boundsY);
-        SimulateSand(new Sand(sandOrigin.x, sandOrigin.y));
+        ParseData(File.ReadAllLines("../../../../input.txt"), out rocks, out boundsY);
+        SimulateSand(new Sand());
     }
 
-    private static void ParseData(string[] input, out List<(int x, int y)> rocks, out (int x, int y) sandOrigin, out int boundsY)
+    private static void ParseData(string[] input, out List<(int x, int y)> rocks, out int boundsY)
     {
         var paths = input.Select(line => line.Split(" -> ")
                         .Select(parts => parts.Split(',')
                         .Select(part => int.Parse(part)).ToArray())
                         .Select(intCombo => (x: intCombo[0], y: intCombo[1])).ToArray()).ToArray();
-        sandOrigin = (500, 0);
         rocks = new();
         int highestY = int.MinValue;
         foreach ((int, int)[] path in paths)
@@ -64,7 +62,7 @@ class ProgramB
                 {
                     break;
                 }    
-                sand = new Sand(500, 0);
+                sand = new Sand();
 
             }
             sand = DropSand(sand);
@@ -93,44 +91,12 @@ class ProgramB
     public class Sand { 
         public int x, y; 
         public bool moving = true;
-        internal bool fellToInfinity;
 
-        public Sand(int x, int y, bool moving = true)
+        public Sand(int x = 500, int y = 0, bool moving = true)
         {
             this.x = x;
             this.y = y;
             this.moving = moving;
         }
     }
-
-    //public class Grid
-    //{
-    //    const char AIR = '.';
-    //    const char ROCK = 'x';
-    //    const char SAND = 'o';
-    //    const char SANDORIGIN = '+';
-
-    //    char[][] grid;
-    //    (int x, int y)[][] paths;
-    //    (int x, int y) bounds, sandOrigin;
-        
-    //    public Grid(string[] input)
-    //    {
-    //        PopulateGrid(input);
-    //        SimulateSand();
-    //    }
-
-
-
-
-
-    //    private void PopulateGrid(string[] input)
-    //    {
-    //        ParseData(input);
-
-
-    //    }
-
-
-    //}
 }
