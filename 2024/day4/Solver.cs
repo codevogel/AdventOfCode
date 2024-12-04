@@ -4,6 +4,7 @@
    {
 
       public static char[][] grid = new char[0][];
+
       private record struct Vector2I(int X, int Y)
       {
          public static Vector2I operator +(Vector2I a, Vector2I b) => new(a.X + b.X, a.Y + b.Y);
@@ -38,14 +39,11 @@
          => word.Select((target_char, index) => (pos: startPosition + index * direction, target_char: target_char))
             .All(query => InBounds(grid, query.pos) && PositionHasChar(query.pos, query.target_char));
 
-
       private static bool PositionHasChar(Vector2I position, char targetChar) =>
          InBounds(grid, position) && grid[position.Y][position.X] == targetChar;
 
-
       private static int CrossMasSearch()
          => grid.SelectMany((row, y) => row.Select((c, x) => IsSAMorMASCrossing(new Vector2I(x, y)) ? 1 : 0)).Sum();
-
 
       private static bool IsSAMorMASCrossing(Vector2I pos)
          => PositionHasChar(pos, 'A')
