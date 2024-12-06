@@ -25,7 +25,7 @@
          // Part B: For each position on the route, simulate the route but now put a wall on each position. 
          // If the resulting route is infinite, note it down.
          int numInfs = 0;
-         foreach (var pos in route.Distinct())
+         foreach (var pos in route)
          {
             if (pos == guardStart) { continue; }
             if (map[pos.y][pos.x] == '#') { continue; }
