@@ -20,22 +20,23 @@
 
          // Part A: Simulate the route and count the number of unique cells visited
          var route = SimulateRoute(map.ToArray(), guardStart).resultingRoute;
-         Console.WriteLine(route.Distinct().Count());
+         Console.WriteLine(route.Count());
 
-         // Part B: For each cell, simulate the route with that cell as a wall. If the resulting route is infinite, note it down.
-         var numInfsPossible =
-            map.Select((row, y) => row.Select((c, x) =>
+         // Part B: For each position on the route, simulate the route but now put a wall on each position. 
+         // If the resulting route is infinite, note it down.
+         int numInfs = 0;
+         foreach (var pos in route.Distinct())
+         {
+            if (pos == guardStart) { continue; }
+            if (map[pos.y][pos.x] == '#') { continue; }
+            map[pos.y][pos.x] = '#';
+            if (SimulateRoute(map, guardStart).infinite)
             {
-               // Skip if we are at the guard's starting position, or if we are at a wall
-               if (c == '#' || (x, y) == guardStart) { return 0; }
-               // Place a wall, simulate route, then remove the wall
-               map[y][x] = '#';
-               var result = SimulateRoute(map, guardStart).infinite ? 1 : 0;
-               map[y][x] = '.';
-               return result;
-            }).Sum()).Sum();
-         // Sum our notes to get the total number of cells that would result in an infinite route 
-         Console.WriteLine(numInfsPossible);
+               numInfs++;
+            }
+            map[pos.y][pos.x] = '.';
+         }
+         Console.WriteLine(numInfs);
       }
 
       static (List<(int x, int y)> resultingRoute, bool infinite) SimulateRoute(char[][] map, (int x, int y) start)
@@ -51,7 +52,7 @@
             var state = ((current_pos.x, current_pos.y), (current_dir.x, current_dir.y));
             if (visited.Contains(state))
             {
-               return (route, true);
+               return (route.Distinct().ToList(), true);
             }
 
             // Store current position in route and mark it as visited
@@ -69,7 +70,7 @@
             // If we can walk, do it
             current_pos = next_pos;
          }
-         return (route, false);
+         return (route.Distinct().ToList(), false);
       }
 
       static (int x, int y) TurnRight((int x, int y) dir)
